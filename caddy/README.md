@@ -53,9 +53,8 @@ Element Client (with some minor header differences): https://612.eridan.me:62531
 @static {
 	file
 	path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
-	}
+}
 header @static Cache-Control max-age=31536000
-
 ```
 Cache all static content for a year.
 

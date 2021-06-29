@@ -28,7 +28,6 @@ https://612.eridan.me:62531 {
 
         header {
 		Referrer-Policy no-referrer
-		Cache-Control max-age=31536000
 		X-XSS-Protection "1; mode=block"
 		X-Frame-Options "SAMEORIGIN"
                 X-Robots-Tag "none"
@@ -99,7 +98,6 @@ https://chat.eridan.me:443 {
 	}
 
         header {
-		Cache-Control max-age=31536000
 		Referrer-Policy no-referrer
 		X-XSS-Protection "1; mode=block"
 		X-Frame-Options "DENY"
