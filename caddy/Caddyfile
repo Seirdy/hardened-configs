@@ -3,6 +3,7 @@
 		protocol {
 			experimental_http3
 			allow_h2c
+			#strict_sni_host
 		}
 	}
 
@@ -11,7 +12,6 @@
 
 https://612.eridan.me:62531 {
 	root * /var/www/element
-	encode gzip zstd
 	file_server
 
 	@static {
@@ -19,14 +19,8 @@ https://612.eridan.me:62531 {
 		path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
 	}
 	header @static Cache-Control max-age=31536000
-
-	tls {
-		protocols tls1.2 tls1.3
-		key_type rsa4096
-		curves x25519 secp521r1 secp384r1 secp256r1
-	}
-
-        header {
+	
+	header {
 		Referrer-Policy no-referrer
 		X-XSS-Protection "1; mode=block"
 		X-Frame-Options "SAMEORIGIN"
@@ -49,7 +43,6 @@ https://chat.eridan.me:443 {
 	reverse_proxy /_matrix/* http://localhost:8008 http://[::1]:8008
 	reverse_proxy /_synapse/client/* http://localhost:8008 http://[::1]:8008
 
-	encode gzip zstd
         @static {
                 file
                 path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
@@ -73,9 +66,9 @@ https://chat.eridan.me:443 {
                 Cross-Origin-Opener-Policy same-origin
                 Cross-Origin-Embedder-Policy require-corp
                 Cross-Origin-Resource-Policy cross-origin
-                Content-Security-Policy "default-src 'none'; connect-src 'self' https://releases.grapheneos.org/; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
-                X-Content-Security-Policy "default-src 'none'; connect-src 'self' https://releases.grapheneos.org/; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
-                X-WebKit-CSP "default-src 'none'; connect-src 'self' https://releases.grapheneos.org/; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                X-Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                X-WebKit-CSP "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
                 Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"
                 Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
                 X-Content-Type-Options "nosniff"
@@ -90,12 +83,6 @@ https://chat.eridan.me:443 {
 		respond "{\"m.homeserver\":{\"base_url\":\"https://chat.eridan.me\"}}"
 	}
 
-
-	tls {
-                protocols tls1.2 tls1.3
-                key_type rsa4096
-                curves x25519 secp521r1 secp384r1 secp256r1
-	}
 
         header {
 		Referrer-Policy no-referrer
@@ -119,7 +106,6 @@ https://eridan.me:8448 {
         reverse_proxy /_matrix/* http://localhost:8008 http://[::1]:8008
         reverse_proxy /_synapse/client/* http://localhost:8008 http://[::1]:8008
 
-        encode gzip zstd
         @static {
                 file
                 path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
@@ -143,9 +129,9 @@ https://eridan.me:8448 {
                 Cross-Origin-Opener-Policy same-origin
                 Cross-Origin-Embedder-Policy require-corp
                 Cross-Origin-Resource-Policy cross-origin
-                Content-Security-Policy "default-src 'none'; connect-src 'self' https://releases.grapheneos.org/; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
-                X-Content-Security-Policy "default-src 'none'; connect-src 'self' https://releases.grapheneos.org/; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
-                X-WebKit-CSP "default-src 'none'; connect-src 'self' https://releases.grapheneos.org/; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                X-Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                X-WebKit-CSP "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
                 Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"
                 Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
                 X-Content-Type-Options "nosniff"
@@ -160,48 +146,6 @@ https://eridan.me:8448 {
 		respond "{\"m.homeserver\":{\"base_url\":\"https://chat.eridan.me\"}}"
 	}
 
-        tls {
-                protocols tls1.2 tls1.3
-                key_type rsa4096
-                curves x25519 secp521r1 secp384r1 secp256r1
-        }
-
-        header {
-		Cache-Control max-age=31536000
-		Referrer-Policy no-referrer
-		X-XSS-Protection "1; mode=block"
-		X-Frame-Options "DENY"
-                X-Robots-Tag "none"
-                Expect-CT "enforce, max-age=63072000"
-                Cross-Origin-Opener-Policy same-origin
-                Cross-Origin-Embedder-Policy require-corp
-                Cross-Origin-Resource-Policy same-origin
-                Content-Security-Policy "font-src 'none'; script-src 'none'; style-src 'none'; frame-ancestors 'none'; block-all-mixed-content"
-                X-Content-Security-Policy "font-src 'none'; script-src 'none'; style-src 'none'; frame-ancestors 'none'; block-all-mixed-content"
-                X-WebKit-CSP "font-src 'none'; script-src 'none'; style-src 'none'; frame-ancestors 'none'; block-all-mixed-content"
-                Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-                X-Content-Type-Options "nosniff"
-                -Server
-        }
-
-}
-
-https://zanthed.xyz:443, https://eridan.me:443 {
-	root * /var/www/zanthed/
-        encode gzip zstd
-        @static {
-                file
-                path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
-        }
-        header @static Cache-Control max-age=31536000
-	file_server
-
-        tls {
-                protocols tls1.2 tls1.3
-                key_type rsa4096
-                curves x25519 secp521r1 secp384r1 secp256r1
-        }
-	
         header {
 		Cache-Control max-age=31536000
 		X-XSS-Protection "1; mode=block"
@@ -215,6 +159,69 @@ https://zanthed.xyz:443, https://eridan.me:443 {
                 Content-Security-Policy "default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; block-all-mixed-content; form-action 'none'"
                 X-Content-Security-Policy "default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; block-all-mixed-content; form-action 'none'"
                 X-WebKit-CSP "default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; block-all-mixed-content; form-action 'none'"
+                Permissions-Policy "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), xr-spatial-tracking=(), clipboard-read=(self), clipboard-write=(self), conversion-measurement=(), hid=(), idle-detection=(), serial=(), trust-token-redemption=()"
+                Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+                X-Content-Type-Options "nosniff"
+                -Server
+        }
+
+        header /.well-known/matrix/server {
+                Content-Type application/json
+                -Server
+        }
+
+        header /.well-known/matrix/client {
+                Content-Type application/json
+		Cache-Control max-age=31536000
+                X-XSS-Protection "1; mode=block"
+                X-Frame-Options "DENY"
+                X-Robots-Tag "none"
+                Access-Control-Allow-Origin *
+                Referrer-Policy no-referrer
+                Expect-CT "enforce, max-age=63072000"
+                Cross-Origin-Opener-Policy same-origin
+                Cross-Origin-Embedder-Policy require-corp
+                Cross-Origin-Resource-Policy cross-origin
+                Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                X-Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                X-WebKit-CSP "default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self'; manifest-src 'self'; script-src 'self'; style-src 'self'; form-action 'none'; frame-ancestors 'none'; block-all-mixed-content; base-uri 'none'; require-trusted-types-for 'script'; trusted-types 'none'"
+                Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"
+                Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+                X-Content-Type-Options "nosniff"
+                -Server
+        }
+
+        handle /.well-known/matrix/server {
+                respond "{ \"m.server\": \"chat.eridan.me:443\" }"
+        }
+
+        handle /.well-known/matrix/client {
+                respond "{\"m.homeserver\":{\"base_url\":\"https://chat.eridan.me\"}}"
+        }
+}
+
+https://zanthed.xyz:443, https://eridan.me:443 {
+	root * /var/www/zanthed/
+        @static {
+                file
+                path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
+        }
+        header @static Cache-Control max-age=31536000
+	file_server
+	
+        header {
+		Cache-Control max-age=31536000
+		X-XSS-Protection "1; mode=block"
+		X-Frame-Options "DENY"
+                X-Robots-Tag "none"
+                Referrer-Policy no-referrer
+                Expect-CT "enforce, max-age=63072000"
+                Cross-Origin-Opener-Policy same-origin
+                Cross-Origin-Embedder-Policy require-corp
+                Cross-Origin-Resource-Policy same-origin
+                Content-Security-Policy "default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; block-all-mixed-content; form-action 'none'; frame-ancestors 'self'"
+                X-Content-Security-Policy "default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; block-all-mixed-content; form-action 'none'; frame-ancestors 'self'"
+                X-WebKit-CSP "default-src 'none'; script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; block-all-mixed-content; form-action 'none'; frame-ancestors 'self'"
                 Permissions-Policy "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), xr-spatial-tracking=(), clipboard-read=(self), clipboard-write=(self), conversion-measurement=(), hid=(), idle-detection=(), serial=(), trust-token-redemption=()"
                 Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
                 X-Content-Type-Options "nosniff"
@@ -256,22 +263,19 @@ https://zanthed.xyz:443, https://eridan.me:443 {
         }
 }
 
-http://turn.eridan.me:80 {
-	redir https://turn.eridan.me
-}
 
-http://chat.eridan.me:80 {
-	redir https://chat.eridan.me
-}
+http://, :80 {
+	redir https://{host}{uri}
 
-http://zanthed.xyz:80 {
-	redir https://zanthed.xyz
-}
-
-http://eridan.me:80 {
-	redir https://eridan.me
+	header {
+		-Server
+	}
 }
 
 https://turn.eridan.me:443 {
 	redir https://eridan.me
+
+	header {
+		-Server
+	}
 }

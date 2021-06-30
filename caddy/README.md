@@ -1,8 +1,5 @@
 # Caddyfile (v2) Hardened
 
-..and performance optimized a bit.
-
-
 # Why Caddy?
 
 - Very, very, simplistic configuartion style.
@@ -10,7 +7,7 @@
 - Reverse proxying is very easy and handles all headers like Remote IP, Host, etc for you without any intervention.
 - Caddy itself is also written in Go.
 - Caddy has support for TLS1.3, HTTP2, and HTTP3/QUIC without any extra configuration with default enabled OCSP stapling, downgrade protection, and default SSL session cache\*.
-- Caddy uses secure TLS ciphers _(only if you are using TLS1.2 and TLS 1.3)_ by default.
+- Caddy uses secure TLS ciphers and secure TLS versions by default.
 - Caddy can use compression easily.
 - Built in support for requesting and automatically requests and enables free TLS certificates from Let's Encrypt, Let's Encrypt staging (such as wildcard certs), or ZeroSSL.
 - Caddy is a project developed by ZeroSSL.
@@ -45,9 +42,13 @@ Element Client (with some minor header differences): https://612.eridan.me:62531
 - `allow_h2c` allows HTTP2 over TCP and HTTP (cleartext). Allows unupgraded requests to still utilize HTTP2's stream instead of HTTP1.1's request/reply. We will upgrade them of course.
 - `admin off` disables the Caddy admin interface from both the UNIX socket and TCP listening. By default, Caddy opens an admin interface on TCP `localhost`. This can be assisted in abritrary process modification, and Caddy suggests to use the UNIX socket. Since we won't be using the admin interface at all, we can disable it entirely.
 
+- `strict_sni_host` is an extra TLS client authentication feature that ensures the `Host` header of a request matches the value of the ServerName by the client's TLS ClientHello. For some strange reason, Microsoft Edge would crash every time I tried to access my website with it enabled. Give it a try yourself.
+
 # General Settings for all websites
 
 `encode gzip zstd` uses compression. It will prioritize gzip first. zstd will only be used if the client does not support gzip.
+
+Note: TLS/HTTPS compression adds attack surface, especially gzip. Trades some security for performance. See [CRIME](https://wikipedia.org/wiki/CRIME) and [BREACH](https://en.wikipedia.org/wiki/BREACH).
 
 ```
 @static {
@@ -58,18 +59,7 @@ header @static Cache-Control max-age=31536000
 ```
 Cache all static content for a year.
 
-```
-tls {
-	protocols tls1.2 tls1.3
-	key_type rsa4096
-	curves x25519 secp521r1 secp384r1 secp256r1
-}
-```
-Very important for secure TLS. We're only allowing a minimum of TLS1.2 and a maximum of TLS1.3. By default, Caddy allows all TLS versions, but not TLS1.3 and no secure ciphers used.
-
-We are asking for an RSA4096 certificate from Let's Encrypt/ZeroSSL. By default, Caddy asks for RSA2048 only. You _can_ specifiy `ed25519`, but Let's Encrypt does not offer ed25519 certificates and will fall all the way back to ZeroSSL.
-
-We're allowing secure curves to be used. No prioritization.
+By default, Caddy requests an ECC certificate and uses secure ciphers, curves, and TLS protocols.
 
 ```
 header {
@@ -94,7 +84,7 @@ header {
 
 The most important part to this config.
 
-- `Cache-Control max-age=31536000` tells the browser to cache this website for 1 year.
+- `Cache-Control max-age=31536000` tells the browser to cache this website for 1 year. Note: This partially breaks Element.
 - `X-XSS-Protection "1; mode=block"` is a legacy, but still commonly used, header to prevent from XSS (cross-site scripting attacks) attacks. This has been replaced with a strong Content Security Policy.
 - `X-Frame-Options "DENY"` is also a legacy, but still commonly used, header to prevent websites from rendering your website in any frames or objects. This has been replaced with `frame-ancestors` in the CSP.
 - `Referrer-Policy no-referrer` omits the `Referrer` header entirely to increase privacy.
@@ -132,3 +122,15 @@ Unfortunately, some web applications (e.g. Discord and Element) use unsafe pract
 `Permissions-Policy "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), xr-spatial-tracking=(), clipboard-read=(self), clipboard-write=(self), conversion-measurement=(), hid=(), idle-detection=(), serial=(), trust-token-redemption=()"`
 
 Blank values `()` are denied and absolutely no exception. `(self)` only allows the same origin. Usually you'll want clipboard access to be set to `(self)` for this.
+
+```
+http://, :80 {
+        redir https://{host}{uri}
+
+        header {
+                -Server
+        }
+}
+```
+
+Upgrade all HTTP requests (and any requests on port 80) to HTTPS and hide the Server header.
