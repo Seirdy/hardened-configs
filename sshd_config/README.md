@@ -68,7 +68,7 @@ ListenAddress ::
 - Listen on IPv4 and IPv6. If possible, connect via IPv6 as IPv6 has mandatory IPsec. Again, no reason to not listen on IPv4 as it's just security through obscurity.
 
 `HostKey /etc/ssh/ssh_host_ed25519_key`
-- Use ONLY the Ed25519 host key. We do not support old and slow keys. This is one part to preventing 99% of the generic bruteforce bots from being able to attempt a bruteforce.
+- Use ONLY the Ed25519 host key. We do not support old and slow keys. This is one part to preventing about 80% of the generic bruteforce bots from being able to attempt a bruteforce.
 
 `RekeyLimit default 1h`
 - Renegotiate the SSH session key after a certain amount of data has been transferred, data amount selected by the cipher type, or after a session has persisted for more than one hour. Key rotation helps prevent replay attacks and time-based attacks.
