@@ -11,7 +11,7 @@ _Note: I do not use Caddy anymore, but this will still generally apply to most w
 - Caddy has support for TLS1.3, HTTP2, and HTTP3/QUIC without any extra configuration with default enabled OCSP stapling, downgrade protection, SSL session ticket key rotation, and default SSL session cache.
 - Caddy uses secure, modern TLS ciphers and secure, modern TLS versions by default.
 - Caddy can use compression easily.
-- Built in support for requesting and automatically requests and enables free TLS certificates from Let's Encrypt, Let's Encrypt staging (such as wildcard certs), or ZeroSSL.
+- Built in support for automatically requesting and enabling free TLS certificates from Let's Encrypt, Let's Encrypt staging (such as wildcard certs), or ZeroSSL.
 - Caddy is a project developed by ZeroSSL.
 - Full integration with Cloudflare and can use Full (Strict) SSL mode with **zero** configuration necessary as it uses a trusted CA for you.
 - Caddy has a JSON API interface for scripting configuration and other tasks.
@@ -43,9 +43,10 @@ Note: TLS/HTTPS compression may add attack surface, especially gzip, and especia
 	file
 	path *.ico *.css *.js *.gif *.jpg *.jpeg *.svg *.woff *.woff2 *.wasm *.html *.json *.map *.txt *.xml
 }
-header @static Cache-Control public, max-age=31536000, immutable
+header @static Cache-Control "public, max-age=31536000, immutable"
 ```
-Cache all static content for a year.
+Cache all static content for a year. We're not including PNGs as they shouldn't be compressed.
+This caches all content specified, even if they're not normally cache-able, and tells clients that the body response will _not_ change overtime and the client does not need to send a refresh to the server.
 
 By default, Caddy requests an ECC certificate and uses secure ciphers, curves, and TLS protocols.
 
@@ -72,7 +73,7 @@ header {
 
 The most important part to this config.
 
-- `Cache-Control "public, no-cache` tells the browser to allow any cache, even if the content is not normally cacheable. But it must go through validation by the server.
+- `Cache-Control "public, no-cache"` tells the browser to allow any cache, even if the content is not normally cacheable. But it must go through validation by the server.
 - `X-XSS-Protection "1; mode=block"` is a legacy, but still commonly used, header to prevent from XSS (cross-site scripting attacks) attacks. This has been replaced with a strong Content Security Policy.
 - `X-Frame-Options "DENY"` is also a legacy, but still commonly used, header to prevent websites from rendering your website in any frames or objects. This has been replaced with `frame-ancestors` in the CSP.
 - `Referrer-Policy no-referrer` omits the `Referrer` header entirely to increase privacy.
