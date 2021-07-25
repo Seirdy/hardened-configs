@@ -2,7 +2,7 @@
 	servers {
 		protocol {
 			experimental_http3
-			allow_h2c
+			#allow_h2c
 			#strict_sni_host
 		}
 	}
@@ -19,7 +19,7 @@ https://612.eridan.me:62531 {
 		path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
 	}
 	header @static Cache-Control max-age=31536000
-	
+
 	header {
 		Referrer-Policy no-referrer
 		X-XSS-Protection "1; mode=block"
@@ -48,7 +48,7 @@ https://chat.eridan.me:443 {
                 path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
         }
         header @static Cache-Control max-age=31536000
-	
+
 	header /.well-known/matrix/server {
 		Content-Type application/json
 		-Server
@@ -208,7 +208,7 @@ https://zanthed.xyz:443, https://eridan.me:443 {
         }
         header @static Cache-Control max-age=31536000
 	file_server
-	
+
         header {
 		Cache-Control max-age=31536000
 		X-XSS-Protection "1; mode=block"

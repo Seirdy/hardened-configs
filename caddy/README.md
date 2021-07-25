@@ -1,5 +1,7 @@
 # Caddyfile (v2) Hardened
 
+_Note: I do not use Caddy anymore, but this will still generally apply to most with some maybe minor inconsistencies for a while._
+
 # Why Caddy?
 
 - Very, very, simplistic configuartion style.
@@ -24,22 +26,10 @@
 - Caddy has no middleware or any place to configure rate limiting solutions to mitigate DOS attacks like Nginx.
 - Simplicity is not always better.
 
-# Need real world proof?
-
-_Note: my website is only a static website. Your mileage may vary._
-
-My Hardenize Report: https://www.hardenize.com/report/eridan.me/1624919632
-
-My SSL Labs Score (A+): https://www.ssllabs.com/ssltest/analyze.html?d=eridan.me
-
-My PageSpeed Insights Score (100): https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Feridan.me
-
-Element Client (with some minor header differences): https://612.eridan.me:62531
-
 # Global Settings
 
 - `experimental_http3` allows HTTP3/QUIC. It's a very refined and high performance standard now so it's generally safe to use in production now. Utilizes UDP instead of TCP.
-- `allow_h2c` allows HTTP2 over TCP and HTTP (cleartext). Allows unupgraded requests to still utilize HTTP2's stream instead of HTTP1.1's request/reply. We will upgrade them of course.
+- `allow_h2c` allows HTTP2 over TCP and HTTP (cleartext). Allows unupgraded requests to still utilize HTTP2's stream instead of HTTP1.1's request/reply. We will upgrade them of course. Determine if you actually need this as in some cases it can break things.
 - `admin off` disables the Caddy admin interface from both the UNIX socket and TCP listening. By default, Caddy opens an admin interface on TCP `localhost`. This can be assisted in abritrary process modification, and Caddy suggests to use the UNIX socket. Since we won't be using the admin interface at all, we can disable it entirely.
 
 - `strict_sni_host` is an extra TLS client authentication feature that ensures the `Host` header of a request matches the value of the ServerName by the client's TLS ClientHello. For some strange reason, Microsoft Edge would crash every time I tried to access my website with it enabled. Give it a try yourself.

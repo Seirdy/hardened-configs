@@ -1,0 +1,47 @@
+Protocol 2
+Port 22
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+HostKey /etc/ssh/ssh_host_ed25519_key
+RekeyLimit default 1h
+
+Ciphers chacha20-poly1305@openssh.com
+HostKeyAlgorithms ssh-ed25519
+KexAlgorithms curve25519-sha256
+MACs hmac-sha2-512-etm@openssh.com
+
+PermitUserRC no
+
+SyslogFacility AUTHPRIV
+LogLevel INFO
+
+LoginGraceTime 90
+PermitRootLogin prohibit-password
+PermitEmptyPasswords no
+StrictModes yes
+MaxAuthTries 5
+MaxSessions 5
+PubkeyAuthentication yes
+
+HostbasedAuthentication no
+IgnoreUserKnownHosts yes
+IgnoreRhosts yes
+
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+KerberosAuthentication no
+GSSAPIAuthentication no
+GSSAPICleanupCredentials yes
+UsePAM yes
+
+AllowAgentForwarding no
+X11Forwarding no
+
+PrintMotd no
+TCPKeepAlive no
+UseDNS yes
+Compression no
+PermitUserEnvironment no
+
+Subsystem sftp /usr/libexec/openssh/sftp-server -u 0077 -l INFO -f AUTHPRIV
